@@ -1,14 +1,14 @@
 {
-  "width":800,
-  "height": 600,
-  "max_x_y_guard_speed" : 5,
-  "max_y_illegal_imigrant_speed": 5,
-  "n_patrols": 10,
-  "n_cameras": 2,
-  "mean_illegal_imigrants_respawn_per_second": 1.0,
-  "patrol_range": 50,
-  "camera_range": 100,
-  "barbed_wire_durability": 100,
-  "illegal_imigrants_tool_max_efficency_per_second": 50
-
+    "width": 100,
+    "height": 100,
+    "n_patrols": 5,
+    "n_cameras": 3,
+    "mean_illegal_imigrants_respawn_per_second": 0.5,
+    "max_x_y_guard_speed": 5,
+    "max_y_illegal_imigrant_speed": 3,
+    "illegal_imigrants_tool_max_efficency_per_second": 2,
+    "barbed_wire_durability": 100,
+    "patrol_distance": 5,
+    "patrol_range": 20,
+    "camera_range": 15
 }

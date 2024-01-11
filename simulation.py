@@ -1,39 +1,60 @@
-import pygame
-from sys import exit
-from classes import Game
 from json import load
 
+from mesa.visualization.modules import CanvasGrid
+from mesa.visualization.ModularVisualization import ModularServer
+from mesa.visualization.modules import ChartModule
+
+from Agents.BarbedWire import BarbedWire
+from Agents.BorderLine import BorderLine
+from Agents.GuardPatrol import GuardPatrol
+from Agents.IllegalImmigrant import IllegalImmigrant
+from Agents.Camera import Camera
+from Models.BorderModel import BorderModel
 
 params = load(open("params.json", 'r'))
 
 
-pygame.init()
+def agent_portrayal(agent):
+    portrayal = {"Shape": "rect", "Filled": "true", "Layer": 0}
 
-width, height = params["width"], params["height"]
-screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Simulation alfa version")
-background_color = (0,0,0)
+    if isinstance(agent, GuardPatrol):
+        portrayal["Color"] = "blue"
+        portrayal["w"] = 1
+        portrayal["h"] = 1
+    elif isinstance(agent, IllegalImmigrant):
+        portrayal["Color"] = "red"
+        portrayal["w"] = 1
+        portrayal["h"] = 1
+    elif isinstance(agent, Camera):
+        portrayal["Color"] = "cyan"
+        portrayal["w"] = 1
+        portrayal["h"] = 1
+    elif isinstance(agent, BarbedWire):
+        portrayal["Color"] = "yellow"
+        portrayal["w"] = 10000
+        portrayal["h"] = 1
+        portrayal["Layer"] = 1
+    elif isinstance(agent, BorderLine):
+        portrayal["Color"] = "red"
+        portrayal["w"] = 10000
+        portrayal["h"] = 5
+        portrayal["Layer"] = 1
+
+    return portrayal
+
+chart = ChartModule([
+    {"Label": "Not_captured_Illegal_Immigrants", "Color": "red"},
+    {"Label": "Captured_Illegal_Immigrants", "Color": "Green"}], data_collector_name='datacollector')
+
+grid = CanvasGrid(agent_portrayal, 100, 100, 500, 500)
 
 
-game = Game(screen=screen, n_patrols=params["n_patrols"],n_cameras=params["n_cameras"],n_ii_per_second=params["mean_illegal_imigrants_respawn_per_second"])
+server = ModularServer(BorderModel,
+                       [grid, chart],
+                       "Border Model",
+                       {"width": params["width"], "height": params["height"], "n_patrols": params["n_patrols"], "n_cameras": params["n_cameras"],
+                        "n_ii_per_second": params["mean_illegal_imigrants_respawn_per_second"], "params": params})
 
-
-running = True
-
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    screen.fill(background_color)
-    game.go()
-
-    pygame.display.flip()
-    pygame.time.Clock().tick(30)
-
-
-
-print(round(game.counter_finished_imigrants*100/game.counter_spawn_illegal_imigrants), "% of all illegal immigrants crossed the border", sep='')
-pygame.quit()
-exit()
+server.port = 8521
+server.launch()
 
