@@ -47,8 +47,8 @@ class GuardPatrol(Agent):
 
     def check_enviroment(self):
         if 0 <= self.x < self.model.width and 0 <= self.y < self.model.height:
-            min_x, max_x = max(0, self.x - 5), min(self.model.width - 1, self.x + 5)
-            min_y, max_y = max(0, self.y - 5), min(self.model.height - 1, self.y + 5)
+            min_x, max_x = max(0, self.x - self.patrol_distance_view), min(self.model.width - 1, self.x + self.patrol_distance_view)
+            min_y, max_y = max(0, self.y - self.patrol_distance_view), min(self.model.height - 1, self.y + self.patrol_distance_view)
 
             captured_migrant = 0
 
@@ -59,6 +59,4 @@ class GuardPatrol(Agent):
                             self.model.captured_ii_count += 1
                             agent.is_arrested = True
                             captured_migrant += 1
-            if captured_migrant > 0:
-                print(captured_migrant)
             return

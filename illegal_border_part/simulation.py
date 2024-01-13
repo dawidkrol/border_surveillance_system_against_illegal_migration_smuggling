@@ -24,13 +24,10 @@ def agent_portrayal(agent):
         portrayal["h"] = 1
     elif isinstance(agent, IllegalImmigrant):
         if not agent.is_arrested:
-            portrayal["Color"] = "red"
-            portrayal["w"] = 1
-            portrayal["h"] = 1
+            portrayal = {"Shape": "circle", "Color": "#fa0000", "Filled": "true", "Layer": 0, "r": 1, "w": 1, "h": 1}
         else:
-            portrayal["Color"] = "black"
-            portrayal["w"] = 1
-            portrayal["h"] = 1
+            # portrayal = {"Shape": "rect", "Color": "#915353", "Filled": "false", "Layer": 0, "r": 1, "w": 1, "h": 1}
+            portrayal = {"Shape": "rect", "Color": "white", "Filled": "false", "Layer": 0, "r": 1, "w": 1, "h": 1}
     elif isinstance(agent, Camera):
         portrayal["Color"] = "cyan"
         portrayal["w"] = 1
@@ -41,7 +38,7 @@ def agent_portrayal(agent):
         portrayal["h"] = 1
     elif isinstance(agent, BorderLine):
         portrayal["Color"] = "yellow"
-        portrayal["w"] = 10000
+        portrayal["w"] = 1
         portrayal["h"] = 1
         portrayal["Layer"] = 1
     elif isinstance(agent, BorderFence):
@@ -71,6 +68,5 @@ server = ModularServer(BorderModel,
                        {"width": params["width"], "height": params["height"], "n_patrols": params["n_patrols"], "n_migrants": params["n_migrants"],
                         "n_cameras": params["n_cameras"], "n_radars": params["n_radars"], "params": params})
 
-server.port = 8521
+server.port = 5001
 server.launch()
-
