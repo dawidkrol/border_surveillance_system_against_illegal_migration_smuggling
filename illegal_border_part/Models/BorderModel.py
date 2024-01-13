@@ -26,7 +26,7 @@ class BorderModel(Model):
         self.guard_last_id = 0
         self.is_alarm_state = False
         self.step_count = 0
-        self.my_step_definition = params['steps_by_my_step_definition']
+        self.my_generate_step_definition = params['steps_by_my_generate_step_definition']
         self.number_of_patrols = 0
         self.number_of_migrants = 0
 
@@ -46,7 +46,10 @@ class BorderModel(Model):
         for i in range(n_patrols):
             self.guard_last_id = i
             self.number_of_patrols += 1
-            agent = GuardPatrol(self.guard_last_id, self, width - (patrol_distance * (1+i)), height - 10, params['max_patrol_speed'], params['patrol_distance_view'], params['how_many_suspects_it_can_capture_at_the_same_time'])
+            agent = GuardPatrol(self.guard_last_id, self, width - (patrol_distance * (1+i)), height - 10,
+                                params['max_patrol_speed'], params['patrol_distance_view'],
+                                params['how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step'],
+                                params['steps_by_my_capture_step_definition'])
             self.grid.place_agent(agent, (agent.x, agent.y))
             self.schedule.add(agent)
 
@@ -89,8 +92,7 @@ class BorderModel(Model):
 
     def step(self):
         self.step_count += 1
-        if self.step_count >= self.my_step_definition:
-            self.step_count = 0
+        if self.step_count % self.my_generate_step_definition == 0:
             if self.is_alarm_state:
                 for i in range(self.params['new_patrols_per_my_step_definition_after_alarm_state']):
                     self.add_guard()
@@ -124,6 +126,7 @@ class BorderModel(Model):
             return
         agent = GuardPatrol(self.guard_last_id, self, 0, self.height - 10,
                                     self.params['max_patrol_speed'], self.params['patrol_distance_view'],
-                                    self.params['how_many_suspects_it_can_capture_at_the_same_time'])
+                                    self.params['how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step'],
+                                    self.params['steps_by_my_capture_step_definition'])
         self.grid.place_agent(agent, (agent.x, agent.y))
         self.schedule.add(agent)

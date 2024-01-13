@@ -5,14 +5,18 @@ from Agents.BorderFence import BorderFence
 from Agents.IllegalImmigrant import IllegalImmigrant
 
 class GuardPatrol(Agent):
-    def __init__(self, unique_id, model, x, y, speed, patrol_distance_view, how_many_suspects_it_can_capture_at_the_same_time):
+    def __init__(self, unique_id, model, x, y, speed, patrol_distance_view,
+                 how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step,
+                 steps_by_my_capture_step_definition):
         super().__init__(unique_id, model)
         self.x = x
         self.y = y
         self.speed = speed
         self.patrol_distance_view = patrol_distance_view
-        self.how_many_suspects_it_can_capture_at_the_same_time = how_many_suspects_it_can_capture_at_the_same_time
+        self.how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step = how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step
         self.watch_destroyed_fence = False
+        self.steps_by_my_capture_step_definition = steps_by_my_capture_step_definition
+        self.captured_migrant = 0
 
     def step(self):
         self.move()
@@ -46,17 +50,22 @@ class GuardPatrol(Agent):
             self.model.grid.move_agent(self, (self.x, self.y))
 
     def check_enviroment(self):
+        print('self.captured_migrant =', self.captured_migrant)
+        if self.captured_migrant == self.how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step:
+            print('Max captured')
+        if self.model.step_count % self.steps_by_my_capture_step_definition == 0:
+            self.captured_migrant = 0
+            print('RESTART')
         if 0 <= self.x < self.model.width and 0 <= self.y < self.model.height:
             min_x, max_x = max(0, self.x - self.patrol_distance_view), min(self.model.width - 1, self.x + self.patrol_distance_view)
             min_y, max_y = max(0, self.y - self.patrol_distance_view), min(self.model.height - 1, self.y + self.patrol_distance_view)
 
-            captured_migrant = 0
-
             for x in range(min_x, max_x + 1):
                 for y in range(min_y, max_y + 1):
                     for agent in self.model.grid[x][y]:
-                        if isinstance(agent, IllegalImmigrant) and agent.is_arrested is False and captured_migrant < self.how_many_suspects_it_can_capture_at_the_same_time:
+                        if isinstance(agent, IllegalImmigrant) and agent.is_arrested is False and\
+                                self.captured_migrant < self.how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step:
                             self.model.captured_ii_count += 1
                             agent.is_arrested = True
-                            captured_migrant += 1
+                            self.captured_migrant += 1
             return
