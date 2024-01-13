@@ -1,14 +1,21 @@
 {
-    "width": 100,
+    "width": 300,
     "height": 100,
-    "n_patrols": 5,
-    "n_cameras": 3,
-    "mean_illegal_imigrants_respawn_per_second": 0.5,
-    "max_x_y_guard_speed": 5,
-    "max_y_illegal_imigrant_speed": 3,
-    "illegal_imigrants_tool_max_efficency_per_second": 2,
-    "barbed_wire_durability": 100,
-    "patrol_distance": 5,
-    "patrol_range": 20,
-    "camera_range": 15
+
+    "n_patrols": 10,
+    "how_many_suspects_it_can_capture_at_the_same_time": 1,
+    "patrol_distance_view": 5,
+    "max_patrol_speed": 5,
+
+    "n_migrants": 200,
+    "max_y_illegal_imigrant_speed": 10,
+    "illegal_imigrants_tool_efficency": 10,
+    "percent_of_chance_to_choose_to_destroy_the_obstacle_if_there_is_already_a_destroyed": 15,
+
+    "n_cameras": 2,
+    "camera_distance_view": 10,
+    "percentage_of_chance_to_escape_after_being_noticed_by_the_camera": 20,
+
+    "n_radars": 0,
+    "radar_distance_view": 10
 }
