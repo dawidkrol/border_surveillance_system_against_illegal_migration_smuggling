@@ -14,7 +14,7 @@ class Migrant(Agent):
         self.stopped = False
         self.is_arrested = False
 
-        if self.is_illegal:
+        if not self.is_illegal:
             self.legal_documents = 1
             self.illegal_items = 0
 

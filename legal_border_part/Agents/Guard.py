@@ -35,8 +35,7 @@ class Guard(Agent):
             self.migrant_to_check = None
 
     def check_documents(self) -> bool:
-        print(self.migrant_to_check.legal_documents, self.accuracy, np.abs(self.migrant_to_check.legal_documents - 1) * self.accuracy)
-        return np.abs(self.migrant_to_check.legal_documents - 1) * self.accuracy <= 0.5
+        return np.abs(self.migrant_to_check.legal_documents - 1) * self.accuracy <= 0.4
 
     def check_suspicion(self) -> bool:
         return self.suspiciousness * self.migrant_to_check.suspicion >= 0.3

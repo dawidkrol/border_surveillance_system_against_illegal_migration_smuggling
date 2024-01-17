@@ -1,3 +1,4 @@
+import numpy as np
 from mesa import Agent
 
 from Agents.Migrant import Migrant
@@ -7,6 +8,7 @@ class GuardSuperCheck(Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.suspiciousness = 0.5
+        self.accuracy = 1.0
 
         self.migrant_to_check = None
         self.go_to_arest = False
@@ -47,10 +49,10 @@ class GuardSuperCheck(Agent):
 
 
     def check_documents(self) -> bool:
-        return True
+        return np.abs(self.migrant_to_check.legal_documents - 1) * self.accuracy <= 0.2
 
     def check_items(self) -> bool:
-        return True
+        return self.suspiciousness * (self.migrant_to_check.illegal_items - 1) <= 0.3
 
     def arest_migrant(self):
         if self.migrant_to_check.is_illegal:
