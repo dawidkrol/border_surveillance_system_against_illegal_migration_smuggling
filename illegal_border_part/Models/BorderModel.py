@@ -29,6 +29,7 @@ class BorderModel(Model):
         self.my_generate_step_definition = params['steps_by_my_generate_step_definition']
         self.number_of_patrols = 0
         self.number_of_migrants = 0
+        self.steps_by_my_migrant_step_definition = params['steps_by_my_migrant_step_definition']
 
         self.datacollector = DataCollector(
             agent_reporters={"Position": "pos"},
@@ -46,7 +47,7 @@ class BorderModel(Model):
         for i in range(n_patrols):
             self.guard_last_id = i
             self.number_of_patrols += 1
-            agent = GuardPatrol(self.guard_last_id, self, width - (patrol_distance * (1+i)), height - 10,
+            agent = GuardPatrol(self.guard_last_id, self, width - (patrol_distance * (1+i)), height - 12,
                                 params['max_patrol_speed'], params['patrol_distance_view'],
                                 params['how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step'],
                                 params['steps_by_my_capture_step_definition'])
@@ -99,8 +100,9 @@ class BorderModel(Model):
         if self.captured_ii_count >= self.params['alarm_state_after_seeing_more_than_agents']:
             self.is_alarm_state = True
             print("!!!!!!!!!! ALARM !!!!!!!!!!!!!")
-        for i in range(self.params['new_migrants_per_step']):
-            self.add_illegal_migrant()
+        if self.step_count % self.steps_by_my_migrant_step_definition == 0:
+            for i in range(self.params['new_migrants_per_step']):
+                self.add_illegal_migrant()
         self.datacollector.collect(self)
         self.schedule.step()
 
@@ -124,7 +126,7 @@ class BorderModel(Model):
         if self.number_of_patrols > self.params['max_patrol_count']:
             print("!!!!! This is max number of patrols !!!!!")
             return
-        agent = GuardPatrol(self.guard_last_id, self, 0, self.height - 10,
+        agent = GuardPatrol(self.guard_last_id, self, 0, self.height - 12,
                                     self.params['max_patrol_speed'], self.params['patrol_distance_view'],
                                     self.params['how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step'],
                                     self.params['steps_by_my_capture_step_definition'])

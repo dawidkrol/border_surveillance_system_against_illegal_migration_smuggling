@@ -21,6 +21,7 @@ class IllegalImmigrant(Agent):
 
     def step(self):
         if self.is_arrested:
+            self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
         else:
             neighbors = self.model.grid.get_neighbors(self.pos, True, radius=self.speed)
