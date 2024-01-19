@@ -1,5 +1,12 @@
+import os
 import random
+import plotly.graph_objs as go
+from plotly.subplots import make_subplots
+import numpy as np
+from ipywidgets import interact
+from tabulate import tabulate
 
+from matplotlib import pyplot as plt
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 from mesa.time import RandomActivation
@@ -80,7 +87,19 @@ class LegalBorderModel(Model):
             self.grid.place_agent(agent, (agent.x, agent.y))
             self.schedule.add(agent)
 
+
     def step(self):
         self.datacollector.collect(self)
         self.schedule.step()
-        print(self.not_captured_illegal_count, self.not_captured_legal_count, self.captured_legal_count, self.captured_illegal_count)
+        self.display_confusion_matrix()
+
+    def display_confusion_matrix(self):
+        data = np.array([
+            [self.not_captured_legal_count, self.not_captured_illegal_count],
+            [self.captured_legal_count, self.captured_illegal_count]
+        ])
+        labels = ['legal migrant', 'illegal migrant']
+        col_labels = ['not captured', 'captured']
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("Confusion Matrix:")
+        print(tabulate(data, headers=labels, showindex=col_labels, tablefmt="fancy_grid"))
