@@ -87,6 +87,14 @@ class LegalBorderModel(Model):
             self.grid.place_agent(agent, (agent.x, agent.y))
             self.schedule.add(agent)
 
+            is_illegal = agent.is_illegal
+            suspicion = agent.suspicion
+            illegal_items = agent.illegal_items
+            legal_documents = agent.legal_documents
+
+            print('\n\nMigrant:\nis illegal:', is_illegal, '\nsuspicion:', suspicion, '\nillegal items:', illegal_items,
+                  '\nlegal_documents:', legal_documents)
+
 
     def step(self):
         self.datacollector.collect(self)
