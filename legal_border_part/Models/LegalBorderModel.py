@@ -1,12 +1,8 @@
 import os
 import random
-import plotly.graph_objs as go
-from plotly.subplots import make_subplots
 import numpy as np
-from ipywidgets import interact
 from tabulate import tabulate
 
-from matplotlib import pyplot as plt
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 from mesa.time import RandomActivation

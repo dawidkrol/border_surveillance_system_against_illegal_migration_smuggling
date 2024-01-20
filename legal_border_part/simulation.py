@@ -3,6 +3,7 @@ from json import load
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import ChartModule
+from mesa.visualization.ModularVisualization import VisualizationElement
 
 from Agents.Road import Road
 from Models.LegalBorderModel import LegalBorderModel
@@ -14,7 +15,6 @@ from Agents.SuperCheckPlace import SuperCheckPlace
 from Agents.GuardSuperCheck import GuardSuperCheck
 
 params = load(open("params.json", 'r'))
-
 
 def agent_portrayal(agent):
     portrayal = {"Shape": "rect", "Filled": "true", "Layer": 0, "w": 1, "h": 1}
@@ -45,7 +45,7 @@ def agent_portrayal(agent):
         if agent.is_illegal is True:
             portrayal["Color"] = "red"
         else:
-            portrayal["Color"] = "green"
+            portrayal["Color"] = "#02f5a4"
 
     elif isinstance(agent, Guard):
         portrayal["Color"] = "blue"
@@ -54,13 +54,12 @@ def agent_portrayal(agent):
         portrayal["Layer"] = 1
 
     elif isinstance(agent, GuardSuperCheck):
-        portrayal["Color"] = "yellow"
+        portrayal["Color"] = "#02a4f5"
         portrayal["w"] = 1
         portrayal["h"] = 1
         portrayal["Layer"] = 1
 
     return portrayal
-
 
 chart = ChartModule([
     {"Label": "Not_captured_Illegal_Immigrants", "Color": "red"},
