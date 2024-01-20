@@ -19,8 +19,8 @@ class GuardPatrol(Agent):
         self.captured_migrant = 0
 
     def step(self):
-        self.move()
         self.check_enviroment()
+        self.move()
 
     def move(self):
         neighbors = self.model.grid.get_neighbors(self.pos, True, radius=self.patrol_distance_view)
@@ -50,12 +50,12 @@ class GuardPatrol(Agent):
             self.model.grid.move_agent(self, (self.x, self.y))
 
     def check_enviroment(self):
-        print('self.captured_migrant =', self.captured_migrant)
-        if self.captured_migrant == self.how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step:
-            print('Max captured')
         if self.model.step_count % self.steps_by_my_capture_step_definition == 0:
             self.captured_migrant = 0
-            print('RESTART')
+
+        if self.captured_migrant >= self.how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step:
+            return
+
         if 0 <= self.x < self.model.width and 0 <= self.y < self.model.height:
             min_x, max_x = max(0, self.x - self.patrol_distance_view), min(self.model.width - 1, self.x + self.patrol_distance_view)
             min_y, max_y = max(0, self.y - self.patrol_distance_view), min(self.model.height - 1, self.y + self.patrol_distance_view)
