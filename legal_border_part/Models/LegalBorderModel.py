@@ -83,7 +83,7 @@ class LegalBorderModel(Model):
 
         # Generating legal/illegal migrants
         h = 0
-        for i in range(10):
+        for i in range(params['n_migrants_start']):
             h += 3
             self.illegal_migrant_last_id += 1
             agent = Migrant(self.illegal_migrant_last_id, self, w_start + 2, h, random.choice([True, False]), random.random(), random.random(),

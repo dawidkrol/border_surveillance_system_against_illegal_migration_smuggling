@@ -8,6 +8,7 @@
     "guard_supercheck_suspiciousness": 0.5,
     "guard_supercheck_accuracy": 1.0,
 
+    "n_migrants_start": 20,
     "steps_by_my_migrant_step_definition": 10,
     "new_migrants_per_step": 1,
     "max_migrants_count": 1000
