@@ -5,10 +5,10 @@ from Agents.Migrant import Migrant
 
 
 class GuardSuperCheck(Agent):
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, model, params):
         super().__init__(unique_id, model)
-        self.suspiciousness = 0.5
-        self.accuracy = 1.0
+        self.suspiciousness = params['guard_supercheck_suspiciousness']
+        self.accuracy = params['guard_supercheck_accuracy']
 
         self.migrant_to_check = None
         self.go_to_arest = False

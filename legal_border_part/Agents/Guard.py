@@ -5,11 +5,11 @@ from Agents.Migrant import Migrant
 
 
 class Guard(Agent):
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, model, params):
         super().__init__(unique_id, model)
         self.migrant_to_check = None
-        self.suspiciousness = 0.5
-        self.accuracy = 1
+        self.suspiciousness = params['guard_suspiciousness']
+        self.accuracy = params['guard_accuracy']
 
     def step(self):
         neighbors_2 = self.model.grid.get_neighbors(self.pos, True, radius=2)

@@ -21,11 +21,17 @@ class LegalBorderModel(Model):
     def __init__(self, width, height, params):
         self.width = width
         self.height = height
+        self.params = params
         self.grid = MultiGrid(self.width, self.height, torus=True)
         self.not_captured_illegal_count = 0
         self.not_captured_legal_count = 0
         self.captured_legal_count = 0
         self.captured_illegal_count = 0
+        self.illegal_migrant_last_id = 0
+
+        self.step_count = 0
+        self.steps_by_my_migrant_step_definition = params['steps_by_my_migrant_step_definition']
+        self.number_of_migrants = 0
 
         self.datacollector = DataCollector(
             agent_reporters={"Position": "pos"},
@@ -65,11 +71,12 @@ class LegalBorderModel(Model):
                 self.grid.place_agent(self.road, (w, height - 50 - h))
                 i += 1
 
-        self.guard = Guard(i, self)
+        i = 0
+        self.guard = Guard(i, self, params)
         self.schedule.add(self.guard)
         self.grid.place_agent(self.guard, (width // 2, height - 55))
 
-        self.guard = GuardSuperCheck(i, self)
+        self.guard = GuardSuperCheck(i, self, params)
         self.schedule.add(self.guard)
         self.grid.place_agent(self.guard, ((width // 2) + 9, height - 55))
 
@@ -78,10 +85,13 @@ class LegalBorderModel(Model):
         h = 0
         for i in range(10):
             h += 3
-            agent = Migrant(i, self, w_start + 2, h, random.choice([True, False]), random.random(), random.random(),
+            self.illegal_migrant_last_id += 1
+            agent = Migrant(self.illegal_migrant_last_id, self, w_start + 2, h, random.choice([True, False]), random.random(), random.random(),
                             random.random())
             self.grid.place_agent(agent, (agent.x, agent.y))
             self.schedule.add(agent)
+
+            self.number_of_migrants += 1
 
             is_illegal = agent.is_illegal
             suspicion = agent.suspicion
@@ -96,6 +106,22 @@ class LegalBorderModel(Model):
         self.datacollector.collect(self)
         self.schedule.step()
         self.display_confusion_matrix()
+        if self.step_count % self.steps_by_my_migrant_step_definition == 0:
+            for i in range(self.params['new_migrants_per_step']):
+                self.add_migrant()
+        self.step_count += 1
+
+    def add_migrant(self):
+        w_start = self.width // 2
+        self.illegal_migrant_last_id += 1
+        if self.number_of_migrants > self.params['max_migrants_count']:
+            print("Stop generating migrants")
+            return
+        agent = Migrant(self.illegal_migrant_last_id, self, w_start + 2, 0, random.choice([True, False]), random.random(), random.random(),
+                        random.random())
+        self.grid.place_agent(agent, (agent.x, agent.y))
+        self.schedule.add(agent)
+        self.number_of_migrants += 1
 
     def display_confusion_matrix(self):
         data = np.array([
