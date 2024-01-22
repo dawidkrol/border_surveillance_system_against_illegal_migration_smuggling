@@ -3,12 +3,12 @@
     "height": 120,
 
     "n_patrols": 5,
-    "steps_by_my_capture_step_definition": 1,
-    "how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step": 1,
-    "patrol_distance_view": 10,
+    "steps_by_my_capture_step_definition": 5,
+    "how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step": 2,
+    "patrol_distance_view": 8,
     "max_patrol_speed": 5,
     "alarm_state_after_seeing_more_than_agents": 40,
-    "new_patrols_per_my_step_definition_after_alarm_state": 5,
+    "new_patrols_per_my_step_definition_after_alarm_state": 10,
     "steps_by_my_generate_step_definition": 10,
     "max_patrol_count": 10,
 

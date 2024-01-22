@@ -3,6 +3,7 @@ from json import load
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import ChartModule
+from PIL import Image, ImageDraw, ImageTk
 
 from Agents.BorderFence import BorderFence
 from Agents.BorderLine import BorderLine
@@ -33,7 +34,7 @@ def agent_portrayal(agent):
         portrayal["w"] = 1
         portrayal["h"] = 1
     elif isinstance(agent, Radar):
-        portrayal["Color"] = "blue"
+        portrayal["Color"] = "#02f5a4"
         portrayal["w"] = 1
         portrayal["h"] = 1
     elif isinstance(agent, BorderLine):
@@ -67,6 +68,37 @@ server = ModularServer(BorderModel,
                        "Border Model",
                        {"width": params["width"], "height": params["height"], "n_patrols": params["n_patrols"], "n_migrants": params["n_migrants"],
                         "n_cameras": params["n_cameras"], "n_radars": params["n_radars"], "params": params})
+
+
+legend_data = {
+    '#fa0000': 'illegal  migrant',
+    'blue': 'guard',
+    'cyan': 'camera',
+    '#02f5a4': 'radar',
+    'yellow': 'border line',
+    'black': 'border fence',
+}
+
+
+def generate_legend_image():
+    image_width = 200
+    image_height = 200
+
+    legend_image = Image.new("RGB", (image_width, image_height), "white")
+    draw = ImageDraw.Draw(legend_image)
+
+    x_position = 10
+    y_position = 10
+
+    for color, value in legend_data.items():
+        draw.rectangle([x_position, y_position, x_position + 20, y_position + 20], fill=color)
+        draw.text((x_position + 30, y_position + 10), value, fill="black")
+        y_position += 30
+
+    legend_image.show()
+
+
+generate_legend_image()
 
 server.port = 5001
 server.launch()

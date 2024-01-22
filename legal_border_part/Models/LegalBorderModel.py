@@ -35,8 +35,8 @@ class LegalBorderModel(Model):
 
         self.datacollector = DataCollector(
             agent_reporters={"Position": "pos"},
-            model_reporters={"Not_captured_Illegal_Immigrants": "not_captured_illegal_count", "Captured_Illegal_Immigrants": "captured_illegal_count"})
-
+            model_reporters={"Not_captured_Illegal_Immigrants": "not_captured_illegal_count",
+                             "Captured_Illegal_Immigrants": "captured_illegal_count"})
 
         self.schedule = RandomActivation(self)
 
@@ -80,13 +80,13 @@ class LegalBorderModel(Model):
         self.schedule.add(self.guard)
         self.grid.place_agent(self.guard, ((width // 2) + 9, height - 55))
 
-
         # Generating legal/illegal migrants
         h = 0
         for i in range(params['n_migrants_start']):
             h += 3
             self.illegal_migrant_last_id += 1
-            agent = Migrant(self.illegal_migrant_last_id, self, w_start + 2, h, random.choice([True, False]), random.random(), random.random(),
+            agent = Migrant(self.illegal_migrant_last_id, self, w_start + 2, h, random.choice([True, False]),
+                            random.random(), random.random(),
                             random.random())
             self.grid.place_agent(agent, (agent.x, agent.y))
             self.schedule.add(agent)
@@ -100,7 +100,6 @@ class LegalBorderModel(Model):
 
             print('\n\nMigrant:\nis illegal:', is_illegal, '\nsuspicion:', suspicion, '\nillegal items:', illegal_items,
                   '\nlegal_documents:', legal_documents)
-
 
     def step(self):
         self.datacollector.collect(self)
@@ -117,7 +116,8 @@ class LegalBorderModel(Model):
         if self.number_of_migrants > self.params['max_migrants_count']:
             print("Stop generating migrants")
             return
-        agent = Migrant(self.illegal_migrant_last_id, self, w_start + 2, 0, random.choice([True, False]), random.random(), random.random(),
+        agent = Migrant(self.illegal_migrant_last_id, self, w_start + 2, 0, random.choice([True, False]),
+                        random.random(), random.random(),
                         random.random())
         self.grid.place_agent(agent, (agent.x, agent.y))
         self.schedule.add(agent)

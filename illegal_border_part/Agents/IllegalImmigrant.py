@@ -78,6 +78,7 @@ class IllegalImmigrant(Agent):
 
         if len(border_fence_places) > 0:
             self.model.not_captured_ii_count += 1
+            self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
 
     def try_to_destroy_border_fence(self, border_fence_place: BorderFence):
