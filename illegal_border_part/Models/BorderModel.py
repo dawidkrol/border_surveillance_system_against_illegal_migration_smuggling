@@ -14,7 +14,7 @@ from Agents.Radar import Radar
 
 
 class BorderModel(Model):
-    def __init__(self, width, height, n_patrols, n_cameras, n_radars, n_migrants, params):
+    def __init__(self, width, height, n_patrols, cameras, radars, n_migrants, params):
         self.width = width
         self.height = height
         self.params = params
@@ -33,8 +33,8 @@ class BorderModel(Model):
 
         self.datacollector = DataCollector(
             agent_reporters={"Position": "pos"},
-            model_reporters={"Not_captured_Illegal_Immigrants": "not_captured_ii_count", "Captured_Illegal_Immigrants": "captured_ii_count"})
-
+            model_reporters={"Not_captured_Illegal_Immigrants": "not_captured_ii_count",
+                             "Captured_Illegal_Immigrants": "captured_ii_count"})
 
         self.schedule = RandomActivation(self)
 
@@ -47,7 +47,7 @@ class BorderModel(Model):
         for i in range(n_patrols):
             self.guard_last_id = i
             self.number_of_patrols += 1
-            agent = GuardPatrol(self.guard_last_id, self, width - (patrol_distance * (1+i)), height - 12,
+            agent = GuardPatrol(self.guard_last_id, self, width - (patrol_distance * (1 + i)), height - 12,
                                 params['max_patrol_speed'], params['patrol_distance_view'],
                                 params['how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step'],
                                 params['steps_by_my_capture_step_definition'])
@@ -55,16 +55,18 @@ class BorderModel(Model):
             self.schedule.add(agent)
 
         # Generating cameras
-        for i in range(n_cameras):
-            agent = Camera(i, self, random.randint(0, width - 1), random.randint(height - 20, height - 1),
-                           params['camera_distance_view'], params['percentage_of_chance_to_escape_after_being_noticed_by_the_camera'])
+        for i in cameras:
+            agent = Camera(i, self, i['x'], i['y'],
+                           i['distance_view'],
+                           params['percentage_of_chance_to_escape_after_being_noticed_by_the_camera'])
             self.grid.place_agent(agent, (agent.x, agent.y))
             self.schedule.add(agent)
 
         # Generating cameras
-        for i in range(n_radars):
-            agent = Radar(i, self, random.randint(0, width - 1), random.randint(height - 20, height - 1),
-                          params['radar_distance_view'], params['percentage_of_chance_to_escape_after_being_noticed_by_the_camera'])
+        for i in radars:
+            agent = Radar(i, self, i['x'], i['y'],
+                          i['distance_view'],
+                          params['percentage_of_chance_to_escape_after_being_noticed_by_radar'])
             self.grid.place_agent(agent, (agent.x, agent.y))
             self.schedule.add(agent)
 
@@ -72,9 +74,11 @@ class BorderModel(Model):
         for i in range(n_migrants):
             self.ill_agent_last_id = i
             self.number_of_migrants += 1
-            agent = IllegalImmigrant(self.ill_agent_last_id, self, random.randint(0, width - 1), 1, params['max_y_illegal_imigrant_speed'],
+            agent = IllegalImmigrant(self.ill_agent_last_id, self, random.randint(0, width - 1), 1,
+                                     params['max_y_illegal_imigrant_speed'],
                                      params['illegal_imigrants_tool_efficency'],
-                                     params['percent_of_chance_to_choose_to_destroy_the_obstacle_if_there_is_already_a_destroyed'])
+                                     params[
+                                         'percent_of_chance_to_choose_to_destroy_the_obstacle_if_there_is_already_a_destroyed'])
             self.grid.place_agent(agent, (agent.x, agent.y))
             self.schedule.add(agent)
 
@@ -106,19 +110,19 @@ class BorderModel(Model):
         self.datacollector.collect(self)
         self.schedule.step()
 
-
     def add_illegal_migrant(self):
         self.illegal_migrant_last_id += 1
         self.number_of_migrants += 1
         if self.number_of_migrants > self.params['max_migrants_count']:
             print("Stop generating migrants")
             return
-        agent = IllegalImmigrant(self.illegal_migrant_last_id, self, random.randint(0, self.width - 1), 1, self.params['max_y_illegal_imigrant_speed'],
-                                     self.params['illegal_imigrants_tool_efficency'],
-                                     self.params['percent_of_chance_to_choose_to_destroy_the_obstacle_if_there_is_already_a_destroyed'])
+        agent = IllegalImmigrant(self.illegal_migrant_last_id, self, random.randint(0, self.width - 1), 1,
+                                 self.params['max_y_illegal_imigrant_speed'],
+                                 self.params['illegal_imigrants_tool_efficency'],
+                                 self.params[
+                                     'percent_of_chance_to_choose_to_destroy_the_obstacle_if_there_is_already_a_destroyed'])
         self.grid.place_agent(agent, (agent.x, agent.y))
         self.schedule.add(agent)
-
 
     def add_guard(self):
         self.guard_last_id += 1
@@ -127,8 +131,8 @@ class BorderModel(Model):
             print("!!!!! This is max number of patrols !!!!!")
             return
         agent = GuardPatrol(self.guard_last_id, self, 0, self.height - 12,
-                                    self.params['max_patrol_speed'], self.params['patrol_distance_view'],
-                                    self.params['how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step'],
-                                    self.params['steps_by_my_capture_step_definition'])
+                            self.params['max_patrol_speed'], self.params['patrol_distance_view'],
+                            self.params['how_many_suspects_it_can_capture_at_the_same_time_per_my_capture_step'],
+                            self.params['steps_by_my_capture_step_definition'])
         self.grid.place_agent(agent, (agent.x, agent.y))
         self.schedule.add(agent)

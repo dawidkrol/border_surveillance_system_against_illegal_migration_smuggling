@@ -34,7 +34,7 @@ def agent_portrayal(agent):
         portrayal["w"] = 1
         portrayal["h"] = 1
     elif isinstance(agent, Radar):
-        portrayal["Color"] = "#02f5a4"
+        portrayal["Color"] = "#027320"
         portrayal["w"] = 1
         portrayal["h"] = 1
     elif isinstance(agent, BorderLine):
@@ -67,14 +67,14 @@ server = ModularServer(BorderModel,
                        [grid, chart],
                        "Border Model",
                        {"width": params["width"], "height": params["height"], "n_patrols": params["n_patrols"], "n_migrants": params["n_migrants"],
-                        "n_cameras": params["n_cameras"], "n_radars": params["n_radars"], "params": params})
+                        "cameras": params["cameras"], "radars": params["radars"], "params": params})
 
 
 legend_data = {
     '#fa0000': 'illegal  migrant',
     'blue': 'guard',
     'cyan': 'camera',
-    '#02f5a4': 'radar',
+    '#027320': 'radar',
     'yellow': 'border line',
     'black': 'border fence',
 }
